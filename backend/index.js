@@ -1,37 +1,53 @@
 const express = require("express");
 
-const app = express();
+// const db = require('./config/mongoose');
+
+const cookieParser = require("cookie-parser")
 
 const expresslayout = require("express-ejs-layouts");
 
+const path = require('path');
+const fs = require('fs');
 
+// const Tasks = require('./models/tasks');
+
+// const UserData = require('./models/user');
+const app = express();
+
+// console.log("this is our db",db);
+
+port = 9000;
+
+app.use(express.urlencoded());
+
+app.use(cookieParser());
+
+app.use(express.static('./assets'));
 app.use(expresslayout);
+
+// extract style and scripts from sub pages into the layouts
 
 app.set('layout expressStyles', true);
 
 app.set('layout extractScripts', true);
 
-const dotenv =  require("dotenv")
 
-const route = require('./routes')
 
-app.use('/', route)
-
+// app.use("react")
 // set up a view engine
 app.set('view engine', 'ejs');
 
 app.set('views','./views');
 
-app.use(express.urlencoded());
+app.set('views', path.join(__dirname, 'views'));
 
-dotenv.config();
+// Debugging output of file directory
+// console.log('Current working directory:', __dirname);
+// console.log('Files in the views directory:', fs.readdirSync(path.join(__dirname, 'views')));
 
-app.get('/',(req,res) => {
-    res.send("our api is running successfully!")
-})
+app.use('/',require('./routes'));   
 
 
-const port = process.env.port || 9000;
 
 app.listen(port,function(err){
     if(err){
